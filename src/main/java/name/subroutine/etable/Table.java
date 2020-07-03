@@ -17,27 +17,27 @@ public interface Table {
     /**
      * Clear only the records
      */
-    public void clearRecordLst();
+    public void clearRowList();
 
     /**
      * Gets number of fields
      */
-    public int fieldCnt();
+    public int getColumnCount();
 
     /**
      * Gets number of records
      */
-    public int recordCnt();
+    public int getRowCount();
 
     /**
      * Gets number of records
      */
-    public int size();
+    public int getSize();
 
     /**
      * Appends a record at the end of the record set
      */
-    public Table push(Record rec);
+    public Table push(Row rec);
 
     /**
      * Appends an array of String objects at the end of record set. The values need
@@ -54,17 +54,17 @@ public interface Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(String[] value);
+    public Row createRow(String[] value);
 
     /**
      * Creates a record associated with the table type.
      */
-    public Record createRecord();
+    public Row createRecord();
 
     /**
      * Creates a field associated with the table type.
      */
-    public Field createField(String name);
+    public Column createField(String name);
 
     /**
      * Creates a record using given List of String objects.
@@ -72,58 +72,58 @@ public interface Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List<String> value);
+    public Row createRow(List<String> value);
 
     /**
      * Put the cursor in the first record and returns it
      *
      * @return the first record or null if there are no records
      */
-    public Record first();
+    public Row first();
 
     /**
      * Gets the record at current cursor position
      *
      * @return record at current position or null if there are no records
      */
-    public Record get();
+    public Row get();
 
     /**
      * Gets the record with the given record number
      *
      * @param num: record number
      */
-    public Record get(int num);
+    public Row get(int num);
 
     /**
      * Gets from the current record the field specified by fld_idx
      */
-    public Object getVal(int fld_idx);
+    public Object getValue(int fieldIndex);
 
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(String name);
+    public Object getValue(String name);
 
     /**
      * Gets from the specified record the field specified by fld_idx
      */
-    public Object getVal(int rec_idx, int fld_idx);
+    public Object getValue(int recordIndex, int fieldIndex);
 
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(int rec_idx, String name);
+    public Object getValue(int recordIndex, String name);
 
     /**
      * sets a value of the current record
      */
-    public void setVal(int idx, String val);
+    public void setValue(int idx, String val);
 
     /**
      * sets a value of the current record
      */
-    public void setVal(String field, String val);
+    public void setValue(String field, String val);
 
     /**
      * Advances the cursor to the next record
@@ -145,7 +145,7 @@ public interface Table {
      *
      * @return last record in the record set
      */
-    public Record last();
+    public Row last();
 
     /**
      * Adds a field to the field list
@@ -153,27 +153,27 @@ public interface Table {
      * The function will create a clone of the given field and adds it to the end of
      * the field list
      */
-    public int pushFld(Field field);
+    public int pushColumn(Column field);
 
     /**
      * Adds a field to the field list by name
      */
-    public int pushFld(String name);
+    public int pushColumn(String name);
 
     /**
      * Adds an array of strings into the field list
      */
-    public int pushFld(String[] name_a);
+    public int pushColumn(String[] nameList);
 
     /**
      * Gets a field by index number
      */
-    public Field getFld(int idx);
+    public Column getColumn(int idx);
 
     /**
      * Gets a field index by name or -1 if not found
      */
-    public int getFld(String name);
+    public int getColumn(String name);
 
     /**
      * This function sets the field list to the provided array of String objects.
@@ -181,7 +181,7 @@ public interface Table {
      *
      * @return field list
      */
-    public List<Field> fieldLst(String[] list);
+    public List<Column> setColumnList(String[] list);
 
     /**
      * This function sets the field list to the provided vector of String objects.
@@ -189,12 +189,12 @@ public interface Table {
      *
      * @return field list
      */
-    public List<Field> fieldLst(List<String> list);
+    public List<Column> setColumnList(List<String> list);
 
     /**
      * Returns the field list
      */
-    public List<Field> fieldLst();
+    public List<Column> getColumnList();
 
     /**
      * Adds a line (must be a complete line, up until linefeed) to the table. The
@@ -215,7 +215,7 @@ public interface Table {
     /**
      * This pushes lines
      */
-    public void pushLineLst(String[] line_lst);
+    public void pushLineList(String[] lineList);
 
     /**
      * Appends an etable with an array Fields must be set first!!! (don't include
@@ -223,13 +223,13 @@ public interface Table {
      *
      * This function may add more than one record
      */
-    public Table pushLst(String[] value);
+    public Table pushList(String[] value);
 
     /**
      * Sets the current etable to the contents of data, whose first row contains the
      * field names
      */
-    public void set(String[] data, int col_cnt);
+    public void set(String[] data, int columnCount);
 
     /**
      * Deletes a column

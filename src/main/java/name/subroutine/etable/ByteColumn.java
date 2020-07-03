@@ -3,40 +3,40 @@ package name.subroutine.etable;
 /**
  * This is a field whose smallest unit is the byte
  */
-public class ByteField extends AbstractField {
+public class ByteColumn extends AbstractColumn {
     public int _offset;
     public int _size;
 
-    public ByteField() {
+    public ByteColumn() {
         super();
     }
 
-    public void size(int s) {
+    public void setSize(int s) {
         _size = s;
     }
 
-    public int size() {
+    public int getSize() {
         return _size;
     }
 
-    public void offset(int o) {
+    public void setOffset(int o) {
         _offset = o;
     }
 
-    public int offset() {
+    public int getOffset() {
         return _offset;
     }
 
-    public ByteField(String name) {
+    public ByteColumn(String name) {
         super(name);
     }
 
-    public ByteField(String name, int type) {
+    public ByteColumn(String name, int type) {
         super(name, type);
     }
 
     public Object clone() {
-        ByteField nu = new ByteField(_name.toString());
+        ByteColumn nu = new ByteColumn(name.toString());
         return nu;
     }
 }

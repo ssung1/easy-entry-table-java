@@ -71,9 +71,9 @@ class FieldRetriever implements Retriever {
      * Returns the field name at position idx
      */
     public StringBuffer get(Etable table, int idx) {
-        EtableField field;
-        field = (EtableField) table._field_lst.elementAt(idx);
-        return field._name;
+        EtableColumn field;
+        field = (EtableColumn) table._field_lst.elementAt(idx);
+        return field.name;
     }
 
     /**
@@ -105,10 +105,10 @@ class NewRetriever implements Retriever {
      * Creates a new record and returns the _value_lst member
      */
     public List<StringBuffer> get(Etable table) {
-        Record rec = new EtableRecord(table._field_lst);
+        Row rec = new EtableRow(table._field_lst);
         table.push(rec);
 
-        return rec.valLst();
+        return rec.getValueList();
     }
 }
 
@@ -118,10 +118,10 @@ class NewRetriever implements Retriever {
  */
 class RecordRetriever implements Retriever {
     public StringBuffer get(Etable table, int idx) {
-        Record rec;
-        rec = (Record) table._record_lst.lastElement();
+        Row rec;
+        rec = (Row) table._record_lst.lastElement();
         StringBuffer sb;
-        sb = (StringBuffer) rec.valLst().get(idx);
+        sb = (StringBuffer) rec.getValueList().get(idx);
 
         return sb;
     }
@@ -239,12 +239,12 @@ public class Etable extends AbstractTable {
      * This vector contains a list of Field objects. Each field has an offset and a
      * width.
      */
-    public Vector<Field> _field_lst;
+    public Vector<Column> _field_lst;
 
     /**
      * A vector to hold all the record objects
      */
-    public Vector<Record> _record_lst;
+    public Vector<Row> _record_lst;
 
     public Etable() {
         init();
@@ -271,28 +271,28 @@ public class Etable extends AbstractTable {
     /**
      * Clear only the records
      */
-    public void clearRecordLst() {
+    public void clearRowList() {
         _record_lst.clear();
     }
 
     /**
      * Gets number of fields
      */
-    public int fieldCnt() {
+    public int getColumnCount() {
         return _field_lst.size();
     }
 
     /**
      * Gets number of records
      */
-    public int recordCnt() {
+    public int getRowCount() {
         return _record_lst.size();
     }
 
     /**
      * Appends a record at the end of the record set
      */
-    public Table push(Record rec) {
+    public Table push(Row rec) {
         _record_lst.addElement(rec);
         return this;
     }
@@ -303,7 +303,7 @@ public class Etable extends AbstractTable {
      * to create a record set
      */
     public Table push(String[] value) {
-        Record rec = new EtableRecord(_field_lst);
+        Row rec = new EtableRow(_field_lst);
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -319,8 +319,8 @@ public class Etable extends AbstractTable {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(String[] value) {
-        Record rec = new EtableRecord(_field_lst);
+    public Row createRow(String[] value) {
+        Row rec = new EtableRow(_field_lst);
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -336,12 +336,12 @@ public class Etable extends AbstractTable {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List<String> value) {
+    public Row createRow(List<String> value) {
         String[] string_value = new String[0];
 
         string_value = (String[]) value.toArray(string_value);
 
-        return createRecord(string_value);
+        return createRow(string_value);
     }
 
     /**
@@ -349,12 +349,12 @@ public class Etable extends AbstractTable {
      *
      * @return the first record or null if there are no records
      */
-    public Record first() {
+    public Row first() {
         _current = 0;
         if (_record_lst.size() <= 0)
             return null;
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) _record_lst.elementAt(_current);
     }
 
     /**
@@ -362,11 +362,11 @@ public class Etable extends AbstractTable {
      *
      * @return record at current position or null if there are no records
      */
-    public Record get() {
+    public Row get() {
         if (_record_lst.size() <= 0)
             return null;
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) _record_lst.elementAt(_current);
     }
 
     /**
@@ -374,17 +374,17 @@ public class Etable extends AbstractTable {
      *
      * @param num: record number
      */
-    public Record get(int num) {
+    public Row get(int num) {
         if (_record_lst.size() <= num)
             return null;
-        return (Record) _record_lst.elementAt(num);
+        return (Row) _record_lst.elementAt(num);
     }
 
     /**
      * Gets from the current record the field specified by fld_idx
      */
-    public Object getVal(int fld_idx) {
-        Record rec = get();
+    public Object getValue(int fld_idx) {
+        Row rec = get();
         if (rec == null)
             return null;
 
@@ -394,8 +394,8 @@ public class Etable extends AbstractTable {
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(String name) {
-        Record rec = get();
+    public Object getValue(String name) {
+        Row rec = get();
         if (rec == null)
             return null;
 
@@ -405,8 +405,8 @@ public class Etable extends AbstractTable {
     /**
      * Gets from the specified record the field specified by fld_idx
      */
-    public Object getVal(int rec_idx, int fld_idx) {
-        Record rec = get(rec_idx);
+    public Object getValue(int rec_idx, int fld_idx) {
+        Row rec = get(rec_idx);
         if (rec == null)
             return null;
 
@@ -416,8 +416,8 @@ public class Etable extends AbstractTable {
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(int rec_idx, String name) {
-        Record rec = get(rec_idx);
+    public Object getValue(int rec_idx, String name) {
+        Row rec = get(rec_idx);
         if (rec == null)
             return null;
 
@@ -427,8 +427,8 @@ public class Etable extends AbstractTable {
     /**
      * sets a value of the current record
      */
-    public void setVal(int idx, String val) {
-        Record rec = get();
+    public void setValue(int idx, String val) {
+        Row rec = get();
         if (rec == null)
             return;
         rec.set(idx, val);
@@ -437,8 +437,8 @@ public class Etable extends AbstractTable {
     /**
      * sets a value of the current record
      */
-    public void setVal(String field, String val) {
-        Record rec = get();
+    public void setValue(String field, String val) {
+        Row rec = get();
         if (rec == null)
             return;
 
@@ -464,7 +464,7 @@ public class Etable extends AbstractTable {
      *
      * @return last record in the record set
      */
-    public Record last() {
+    public Row last() {
         _current = _record_lst.size() - 1;
 
         if (_current < 0) {
@@ -476,14 +476,14 @@ public class Etable extends AbstractTable {
          * we'd know
          */
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) _record_lst.elementAt(_current);
     }
 
     /**
      * Adds a field to the field list by name
      */
-    public int pushFld(String name) {
-        Field field = createField(name);
+    public int pushColumn(String name) {
+        Column field = createField(name);
         _field_lst.add(field);
         return 1;
     }
@@ -491,9 +491,9 @@ public class Etable extends AbstractTable {
     /**
      * Adds an array of strings into the field list
      */
-    public int pushFld(String[] name_a) {
+    public int pushColumn(String[] name_a) {
         for (int i = 0; i < name_a.length; i++) {
-            pushFld(name_a[i]);
+            pushColumn(name_a[i]);
         }
         return 1;
     }
@@ -501,18 +501,18 @@ public class Etable extends AbstractTable {
     /**
      * Gets a field by index number
      */
-    public Field getFld(int idx) {
-        Field field = (Field) _field_lst.get(idx);
+    public Column getColumn(int idx) {
+        Column field = (Column) _field_lst.get(idx);
         return field;
     }
 
     /**
      * Gets a field index by name or -1 if not found
      */
-    public int getFld(String name) {
+    public int getColumn(String name) {
         for (int i = 0; i < _field_lst.size(); i++) {
-            Field field = getFld(i);
-            if (name.equalsIgnoreCase(field.name())) {
+            Column field = getColumn(i);
+            if (name.equalsIgnoreCase(field.getName())) {
                 return i;
             }
         }
@@ -525,12 +525,12 @@ public class Etable extends AbstractTable {
      *
      * @return field list
      */
-    public List<Field> fieldLst(String[] list) {
+    public List<Column> setColumnList(String[] list) {
         _field_lst = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
-            Field field = createField(list[i].trim());
+            Column field = createField(list[i].trim());
             _field_lst.add(field);
         }
         return _field_lst;
@@ -542,17 +542,17 @@ public class Etable extends AbstractTable {
      *
      * @return field list
      */
-    public List<Field> fieldLst(List<String> list) {
+    public List<Column> setColumnList(List<String> list) {
         String[] string_lst = new String[0];
         string_lst = (String[]) list.toArray(string_lst);
 
-        return fieldLst(string_lst);
+        return setColumnList(string_lst);
     }
 
     /**
      * Returns the field list
      */
-    public List<Field> fieldLst() {
+    public List<Column> getColumnList() {
         return _field_lst;
     }
 
@@ -571,7 +571,7 @@ public class Etable extends AbstractTable {
      *
      * @return a vector of Field objects
      */
-    public static Vector<Field> createFieldLst(String buf) {
+    public static Vector<Column> createFieldLst(String buf) {
         /*
          * we only need to states: space, and non-space
          *
@@ -582,7 +582,7 @@ public class Etable extends AbstractTable {
 
         int status;
 
-        Vector<Field> field_lst = new Vector<>();
+        Vector<Column> field_lst = new Vector<>();
 
         /*
          * initialize to space for now, so when we hit the first nonspace we mark it
@@ -592,7 +592,7 @@ public class Etable extends AbstractTable {
         /*
          * idx starts at 1 because the 0 position is the identifier
          */
-        EtableField field = null;
+        EtableColumn field = null;
         for (int idx = 1; idx <= buf.length(); idx++) {
             char chr;
 
@@ -616,16 +616,16 @@ public class Etable extends AbstractTable {
                          * convenience of the user.
                          */
                         if (field != null) {
-                            field.size(idx - field._offset);
+                            field.setSize(idx - field._offset);
                         }
 
                         /*
                          * make a new field now
                          */
-                        field = new EtableField();
+                        field = new EtableColumn();
                         field._offset = idx;
 
-                        field._name.append(chr);
+                        field.name.append(chr);
 
                         status = notspace;
                         break;
@@ -637,7 +637,7 @@ public class Etable extends AbstractTable {
                         field_lst.add(field);
                         break;
                     }
-                    field._name.append(chr);
+                    field.name.append(chr);
                     break;
             }
         }
@@ -747,7 +747,7 @@ public class Etable extends AbstractTable {
          * As defined by the Easy Entry Table documentation, a record needs not be
          * complete. And we must "do the right thing", as Perl people would say...
          */
-        EtableField field;
+        EtableColumn field;
         int len = buf.length();
         int idx;
         for (idx = 1; idx < _field_lst.size(); idx++) {
@@ -758,7 +758,7 @@ public class Etable extends AbstractTable {
              * 1. buf isn't long enough to have anything sliced 2. buf contains a partial
              * slice 3. buf contains a full slice
              */
-            field = (EtableField) _field_lst.elementAt(prev_idx);
+            field = (EtableColumn) _field_lst.elementAt(prev_idx);
 
             piece = retriever.get(this, prev_idx);
             pieces.add(piece);
@@ -791,7 +791,7 @@ public class Etable extends AbstractTable {
          * idx - 1
          */
         piece = retriever.get(this, idx - 1);
-        field = (EtableField) _field_lst.elementAt(idx - 1);
+        field = (EtableColumn) _field_lst.elementAt(idx - 1);
 
         pieces.add(piece);
         if (field._offset >= len)
@@ -840,7 +840,7 @@ public class Etable extends AbstractTable {
     /**
      * This pushes lines in "etable form"
      */
-    public void pushLineLst(String[] line_lst) {
+    public void pushLineList(String[] line_lst) {
         int i;
         for (i = 0; i < line_lst.length; i++) {
             pushLine(line_lst[i]);
@@ -859,10 +859,10 @@ public class Etable extends AbstractTable {
 
         clear();
         for (row = 0; row < max_row; row++) {
-            Record rec = null;
+            Row rec = null;
 
             if (row > 0) {
-                rec = new EtableRecord(fieldLst());
+                rec = new EtableRow(getColumnList());
                 push(rec);
             }
             for (col = 0; col < col_cnt; col++) {
@@ -870,7 +870,7 @@ public class Etable extends AbstractTable {
 
                 val = data[row * col_cnt + col];
                 if (row == 0) {
-                    pushFld(val);
+                    pushColumn(val);
                     continue;
                 }
                 rec.push(val);
@@ -883,7 +883,7 @@ public class Etable extends AbstractTable {
      */
     public Table delete(String name) {
         int idx;
-        idx = getFld(name);
+        idx = getColumn(name);
 
         if (idx >= 0) {
             delete(idx);
@@ -898,17 +898,17 @@ public class Etable extends AbstractTable {
         _field_lst.remove(idx);
 
         for (first(); !eof(); next()) {
-            get().valLst().remove(idx);
+            get().getValueList().remove(idx);
         }
 
         return this;
     }
 
-    public Record createRecord() {
-        return new EtableRecord(fieldLst());
+    public Row createRecord() {
+        return new EtableRow(getColumnList());
     }
 
-    public Field createField(String name) {
-        return new EtableField(name);
+    public Column createField(String name) {
+        return new EtableColumn(name);
     }
 }

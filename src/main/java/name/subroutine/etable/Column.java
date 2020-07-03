@@ -1,47 +1,38 @@
 package name.subroutine.etable;
 
-import java.sql.*;
-
 /**
  * Definition of a field.
  */
-public interface Field extends Cloneable {
-    /**
-     * Initializes a field by ResultSetMetaData
-     *
-     * @param i column index
-     */
-    public void init(ResultSetMetaData list, int i) throws SQLException;
-
+public interface Column extends Cloneable {
     /**
      * returns the name of this field as a string
      */
-    public String name();
+    public String getName();
 
     /**
      * Sets the name of the field
      */
-    public void name(String n);
+    public void setName(String n);
 
     /**
      * returns size
      */
-    public void size(int s);
+    public void setSize(int s);
 
     /**
      * Sets type
      */
-    public void type(int t);
+    public void setType(int t);
 
     /**
      * Returns type
      */
-    public int type();
+    public int getType();
 
     /**
      * returns size
      */
-    public int size();
+    public int getSize();
 
     /**
      * Sets precision
@@ -56,12 +47,12 @@ public interface Field extends Cloneable {
     /**
      * sets offset
      */
-    public void offset(int o);
+    public void setOffset(int o);
 
     /**
      * returns offset
      */
-    public int offset();
+    public int getOffset();
 
     public Object clone();
 }

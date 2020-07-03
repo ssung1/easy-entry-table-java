@@ -17,16 +17,16 @@ public class EtableTest {
     public void clearTable() {
         etable.clear();
 
-        assertThat(etable.recordCnt(), is(0));
+        assertThat(etable.getRowCount(), is(0));
     }
 
     @Test
     public void readHeader() {
         etable.pushLine("%Symbol Description");
 
-        assertThat(etable.getFld(0).name(), is("Symbol"));
-        assertThat(etable.getFld(0).size(), is(7));
-        assertThat(etable.getFld(1).name(), is("Description"));
+        assertThat(etable.getColumn(0).getName(), is("Symbol"));
+        assertThat(etable.getColumn(0).getSize(), is(7));
+        assertThat(etable.getColumn(1).getName(), is("Description"));
         // not sure why size is 0
         //assertThat(etable.getFld(1).size(), is(11));
     }
@@ -36,7 +36,7 @@ public class EtableTest {
         etable.pushLine("%Symbol Description");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -47,7 +47,7 @@ public class EtableTest {
         etable.pushLine("# this is a comment");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -58,7 +58,7 @@ public class EtableTest {
         etable.pushLine("-------------------");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -69,7 +69,7 @@ public class EtableTest {
         etable.pushLine("                   ");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -80,7 +80,7 @@ public class EtableTest {
         etable.pushLine("**      Deleted                  ");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -91,7 +91,7 @@ public class EtableTest {
         etable.pushLine(" %      Header");
         etable.pushLine(" *      Deleted");
 
-        assertThat(etable.size(), is(2));
+        assertThat(etable.getSize(), is(2));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
         assertThat(etable.get(1).get(0).toString(), is("*"));
@@ -104,7 +104,7 @@ public class EtableTest {
         etable.pushLine(" %      This is a ");
         etable.pushLine("_        header line");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("This is a header line"));
     }
@@ -114,7 +114,7 @@ public class EtableTest {
         etable.pushLine("%Symbol Description");
         etable.pushLine("   %      Header   ");
 
-        assertThat(etable.size(), is(1));
+        assertThat(etable.getSize(), is(1));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
     }
@@ -126,9 +126,9 @@ public class EtableTest {
         etable.pushLine("_        space");
         etable.pushLine(" %      Header");
 
-        assertThat(etable.getFld(0).name(), is("Symbol"));
-        assertThat(etable.getFld(0).size(), is(7));
-        assertThat(etable.getFld(1).name(), is("Header with space"));
+        assertThat(etable.getColumn(0).getName(), is("Symbol"));
+        assertThat(etable.getColumn(0).getSize(), is(7));
+        assertThat(etable.getColumn(1).getName(), is("Header with space"));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class EtableTest {
         etable.pushLine(" *      deleted records");
         etable.pushLine("_        can also be continued");
 
-        assertThat(etable.size(), is(2));
+        assertThat(etable.getSize(), is(2));
         assertThat(etable.get(0).get(0).toString(), is("%"));
         assertThat(etable.get(0).get(1).toString(), is("Header"));
         assertThat(etable.get(1).get(0).toString(), is("*"));

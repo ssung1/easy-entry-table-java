@@ -6,83 +6,83 @@ public abstract class AbstractTable implements Table {
     /**
      * Current record being accessed
      */
-    int _current;
+    int current;
 
     /**
      * Name of the table
      */
-    public String _name;
+    public String name;
 
     /**
      * Type of the table
      */
-    public int _type;
+    public int type;
 
     /**
      * This vector contains a list of Field objects. Each field has an offset and a
      * width.
      */
-    public Vector<Field> _field_lst;
+    public Vector<Column> columnList;
 
     /**
      * A vector to hold all the record objects
      */
-    public Vector<Record> _record_lst;
+    public Vector<Row> rowList;
 
     /**
      * initializes the etable
      */
     public void init() {
-        _record_lst = new Vector<>();
-        _field_lst = new Vector<>();
+        rowList = new Vector<>();
+        columnList = new Vector<>();
     }
 
     /**
      * Clears all contents
      */
     public void clear() {
-        _record_lst.clear();
-        _field_lst.clear();
+        rowList.clear();
+        columnList.clear();
     }
 
     /**
      * Clear only the records
      */
-    public void clearRecordLst() {
-        _record_lst.clear();
+    public void clearRowList() {
+        rowList.clear();
     }
 
     /**
      * Gets number of fields
      */
-    public int fieldCnt() {
-        return _field_lst.size();
+    public int getColumnCount() {
+        return columnList.size();
     }
 
     /**
      * Gets number of records
      */
-    public int recordCnt() {
-        return _record_lst.size();
+    public int getRowCount() {
+        return rowList.size();
     }
 
     /**
      * Returns the number of records (alias for recordCnt. not to be overridden)
      */
-    public final int size() {
-        return recordCnt();
+    public final int getSize() {
+        return getRowCount();
     }
 
     /**
      * Appends a record at the end of the record set
      */
-    public Table push(Record rec) {
-        Record nu = createRecord();
-        for (int i = 0; i < rec.size(); i++) {
+    public Table push(Row rec) {
+        Row nu = createRecord();
+        for (int i = 0; i < rec.getSize(); i++) {
             nu.push(rec.get(i).toString());
         }
 
-        _record_lst.add(nu);
+        rowList.add(nu);
 
         return this;
     }
@@ -93,8 +93,8 @@ public abstract class AbstractTable implements Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(String[] value) {
-        Record rec = createRecord();
+    public Row createRow(String[] value) {
+        Row rec = createRecord();
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -110,12 +110,12 @@ public abstract class AbstractTable implements Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List<String> value) {
+    public Row createRow(List<String> value) {
         String[] string_value = new String[0];
 
         string_value = (String[]) value.toArray(string_value);
 
-        return createRecord(string_value);
+        return createRow(string_value);
     }
 
     /**
@@ -123,12 +123,12 @@ public abstract class AbstractTable implements Table {
      *
      * @return the first record or null if there are no records
      */
-    public Record first() {
-        _current = 0;
-        if (_record_lst.size() <= 0)
+    public Row first() {
+        current = 0;
+        if (rowList.size() <= 0)
             return null;
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) rowList.elementAt(current);
     }
 
     /**
@@ -136,11 +136,11 @@ public abstract class AbstractTable implements Table {
      *
      * @return record at current position or null if there are no records
      */
-    public Record get() {
-        if (_record_lst.size() <= 0)
+    public Row get() {
+        if (rowList.size() <= 0)
             return null;
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) rowList.elementAt(current);
     }
 
     /**
@@ -148,28 +148,28 @@ public abstract class AbstractTable implements Table {
      *
      * @param num: record number
      */
-    public Record get(int num) {
-        if (_record_lst.size() <= num)
+    public Row get(int num) {
+        if (rowList.size() <= num)
             return null;
-        return (Record) _record_lst.elementAt(num);
+        return (Row) rowList.elementAt(num);
     }
 
     /**
      * Gets from the current record the field specified by fld_idx
      */
-    public Object getVal(int fld_idx) {
-        Record rec = get();
+    public Object getValue(int columnIndex) {
+        Row rec = get();
         if (rec == null)
             return null;
 
-        return rec.get(fld_idx);
+        return rec.get(columnIndex);
     }
 
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(String name) {
-        Record rec = get();
+    public Object getValue(String name) {
+        Row rec = get();
         if (rec == null)
             return null;
 
@@ -179,30 +179,30 @@ public abstract class AbstractTable implements Table {
     /**
      * Gets from the specified record the field specified by fld_idx
      */
-    public Object getVal(int rec_idx, int fld_idx) {
-        Record rec = get(rec_idx);
+    public Object getValue(int rowIndex, int columnIndex) {
+        Row rec = get(rowIndex);
         if (rec == null)
             return null;
 
-        return rec.get(fld_idx);
+        return rec.get(columnIndex);
     }
 
     /**
      * Gets from the current record the field specified by field name
      */
-    public Object getVal(int rec_idx, String name) {
-        Record rec = get(rec_idx);
+    public Object getValue(int rowIndex, String columnName) {
+        Row rec = get(rowIndex);
         if (rec == null)
             return null;
 
-        return rec.get(name);
+        return rec.get(columnName);
     }
 
     /**
      * sets a value of the current record
      */
-    public void setVal(int idx, String val) {
-        Record rec = get();
+    public void setValue(int idx, String val) {
+        Row rec = get();
         if (rec == null)
             return;
         rec.set(idx, val);
@@ -211,30 +211,30 @@ public abstract class AbstractTable implements Table {
     /**
      * sets a value of the current record
      */
-    public void setVal(String field, String val) {
-        Record rec = get();
+    public void setValue(String column, String val) {
+        Row rec = get();
         if (rec == null)
             return;
 
-        rec.set(field, val);
+        rec.set(column, val);
     }
 
     /**
      * Advances the cursor to the next record
      */
     public void next() {
-        _current++;
+        current++;
     }
 
     public boolean bof() {
-        return _current < 0;
+        return current < 0;
     }
 
     /**
      * Returns true if the cursor is past last record
      */
     public boolean eof() {
-        return (_current >= size());
+        return (current >= getSize());
     }
 
     /**
@@ -242,10 +242,10 @@ public abstract class AbstractTable implements Table {
      *
      * @return last record in the record set
      */
-    public Record last() {
-        _current = size() - 1;
+    public Row last() {
+        current = getSize() - 1;
 
-        if (_current < 0) {
+        if (current < 0) {
             return null;
         }
 
@@ -254,7 +254,7 @@ public abstract class AbstractTable implements Table {
          * we'd know
          */
 
-        return (Record) _record_lst.elementAt(_current);
+        return (Row) rowList.elementAt(current);
     }
 
     /**
@@ -263,18 +263,18 @@ public abstract class AbstractTable implements Table {
      * The function will create a clone of the given field and adds it to the end of
      * the field list
      */
-    public int pushFld(Field field) {
-        Field newfield = (Field) field.clone();
-        _field_lst.add(newfield);
+    public int pushColumn(Column field) {
+        Column newfield = (Column) field.clone();
+        columnList.add(newfield);
         return 1;
     }
 
     /**
      * Adds an array of strings into the field list
      */
-    public int pushFld(String[] name_a) {
-        for (int i = 0; i < name_a.length; i++) {
-            pushFld(name_a[i]);
+    public int pushColumn(String[] nameList) {
+        for (int i = 0; i < nameList.length; i++) {
+            pushColumn(nameList[i]);
         }
         return 1;
     }
@@ -282,18 +282,18 @@ public abstract class AbstractTable implements Table {
     /**
      * Gets a field by index number
      */
-    public Field getFld(int idx) {
-        Field field = (Field) _field_lst.get(idx);
+    public Column getColumn(int idx) {
+        Column field = (Column) columnList.get(idx);
         return field;
     }
 
     /**
      * Gets a field index by name or -1 if not found
      */
-    public int getFld(String name) {
-        for (int i = 0; i < _field_lst.size(); i++) {
-            Field field = getFld(i);
-            if (name.equalsIgnoreCase(field.name())) {
+    public int getColumn(String name) {
+        for (int i = 0; i < columnList.size(); i++) {
+            Column field = getColumn(i);
+            if (name.equalsIgnoreCase(field.getName())) {
                 return i;
             }
         }
@@ -306,15 +306,15 @@ public abstract class AbstractTable implements Table {
      *
      * @return field list
      */
-    public List<Field> fieldLst(String[] list) {
-        _field_lst = new Vector<>();
+    public List<Column> setColumnList(String[] list) {
+        columnList = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
-            Field field = createField(list[i].trim());
-            _field_lst.add(field);
+            Column field = createField(list[i].trim());
+            columnList.add(field);
         }
-        return _field_lst;
+        return columnList;
     }
 
     /**
@@ -323,24 +323,24 @@ public abstract class AbstractTable implements Table {
      *
      * @return field list
      */
-    public List<Field> fieldLst(List<String> list) {
+    public List<Column> setColumnList(List<String> list) {
         String[] string_lst = new String[0];
         string_lst = (String[]) list.toArray(string_lst);
 
-        return fieldLst(string_lst);
+        return setColumnList(string_lst);
     }
 
     /**
      * Returns the field list
      */
-    public List<Field> fieldLst() {
-        return _field_lst;
+    public List<Column> getColumnList() {
+        return columnList;
     }
 
     /**
      * This pushes lines in "etable form"
      */
-    public void pushLineLst(String[] line_lst) {
+    public void pushLineList(String[] line_lst) {
         int i;
         for (i = 0; i < line_lst.length; i++) {
             pushLine(line_lst[i]);
@@ -348,10 +348,10 @@ public abstract class AbstractTable implements Table {
     }
 
     public Table push(String[] value) {
-        Record rec;
+        Row rec;
         rec = createRecord();
 
-        rec.pushLst(value);
+        rec.pushAll(value);
 
         return push(rec);
     }
@@ -360,12 +360,12 @@ public abstract class AbstractTable implements Table {
      * Appends an etable with an array Fields must be set first!!! (don't include
      * the fields in the array because it needs field information to append)
      */
-    public Table pushLst(String[] value) {
+    public Table pushList(String[] value) {
         int cnt;
-        cnt = fieldCnt();
+        cnt = getColumnCount();
 
         for (int i = 0; i < value.length; i += cnt) {
-            Record rec = createRecord();
+            Row rec = createRecord();
 
             for (int j = 0; j < cnt; j++) {
                 rec.push(value[i + j]);
@@ -388,7 +388,7 @@ public abstract class AbstractTable implements Table {
 
         clear();
         for (row = 0; row < max_row; row++) {
-            Record rec = null;
+            Row rec = null;
 
             if (row > 0) {
                 rec = createRecord();
@@ -399,7 +399,7 @@ public abstract class AbstractTable implements Table {
 
                 val = data[row * col_cnt + col];
                 if (row == 0) {
-                    pushFld(val);
+                    pushColumn(val);
                     continue;
                 }
                 rec.push(val);
@@ -412,7 +412,7 @@ public abstract class AbstractTable implements Table {
      */
     public Table delete(String name) {
         int idx;
-        idx = getFld(name);
+        idx = getColumn(name);
 
         if (idx >= 0) {
             delete(idx);
@@ -424,10 +424,10 @@ public abstract class AbstractTable implements Table {
      * Deletes a column
      */
     public Table delete(int idx) {
-        _field_lst.remove(idx);
+        columnList.remove(idx);
 
         for (first(); !eof(); next()) {
-            get().valLst().remove(idx);
+            get().getValueList().remove(idx);
         }
 
         return this;
@@ -443,14 +443,14 @@ public abstract class AbstractTable implements Table {
      * and so on
      * </pre>
      */
-    public static Object[] toArray(Record rec) {
+    public static Object[] toArray(Row rec) {
         int cnt;
-        cnt = rec.fieldCnt();
+        cnt = rec.getColumnCount();
 
         Object[] retval = new Object[cnt * 2];
 
         for (int i = 0; i < cnt; i++) {
-            retval[i * 2] = rec.getFld(i).name();
+            retval[i * 2] = rec.getColumn(i).getName();
             retval[i * 2 + 1] = rec.get(i);
         }
 
@@ -458,6 +458,6 @@ public abstract class AbstractTable implements Table {
     }
 
     public int current() {
-        return _current;
+        return current;
     }
 }
