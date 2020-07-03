@@ -22,7 +22,7 @@ public interface Record {
     /**
      * Returns internal value list (this is not a copy. alter at your own risk)
      */
-    public List valLst();
+    public List<StringBuffer> valLst();
 
     /**
      * Sets a value in a record by index
@@ -84,15 +84,6 @@ public interface Record {
     public Record push(String val);
 
     /**
-     * Adds a value at the end of the value list
-     *
-     * Sometimes our values and field definitions do not match. This is usually a
-     * bad thing, but during the construction of a record, we will have these
-     * intermediate states.
-     */
-    public Record push(Object val);
-
-    /**
      * Adds a set of values to the end of the value list
      */
     public Record pushLst(ResultSet value) throws SQLException;
@@ -120,5 +111,5 @@ public interface Record {
     /**
      * Returns the value as a "map", or associative array
      */
-    public Map toMap();
+    public Map<String, String> toMap();
 }

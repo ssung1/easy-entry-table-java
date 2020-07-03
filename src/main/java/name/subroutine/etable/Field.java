@@ -1,6 +1,5 @@
 package name.subroutine.etable;
 
-import java.util.*;
 import java.sql.*;
 
 /**
@@ -33,8 +32,6 @@ public interface Field extends Cloneable {
      * Sets type
      */
     public void type(int t);
-
-    public void type(Class t);
 
     /**
      * Returns type

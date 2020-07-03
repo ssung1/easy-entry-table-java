@@ -1,8 +1,6 @@
 package name.subroutine.etable;
 
 import java.util.*;
-import java.io.*;
-import java.sql.*;
 
 public abstract class AbstractTable implements Table {
     /**
@@ -24,19 +22,19 @@ public abstract class AbstractTable implements Table {
      * This vector contains a list of Field objects. Each field has an offset and a
      * width.
      */
-    public Vector _field_lst;
+    public Vector<Field> _field_lst;
 
     /**
      * A vector to hold all the record objects
      */
-    public Vector _record_lst;
+    public Vector<Record> _record_lst;
 
     /**
      * initializes the etable
      */
     public void init() {
-        _record_lst = new Vector();
-        _field_lst = new Vector();
+        _record_lst = new Vector<>();
+        _field_lst = new Vector<>();
     }
 
     /**
@@ -112,7 +110,7 @@ public abstract class AbstractTable implements Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List value) {
+    public Record createRecord(List<String> value) {
         String[] string_value = new String[0];
 
         string_value = (String[]) value.toArray(string_value);
@@ -308,8 +306,8 @@ public abstract class AbstractTable implements Table {
      *
      * @return field list
      */
-    public List fieldLst(String[] list) {
-        _field_lst = new Vector();
+    public List<Field> fieldLst(String[] list) {
+        _field_lst = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
@@ -325,7 +323,7 @@ public abstract class AbstractTable implements Table {
      *
      * @return field list
      */
-    public List fieldLst(List list) {
+    public List<Field> fieldLst(List<String> list) {
         String[] string_lst = new String[0];
         string_lst = (String[]) list.toArray(string_lst);
 
@@ -335,41 +333,8 @@ public abstract class AbstractTable implements Table {
     /**
      * Returns the field list
      */
-    public List fieldLst() {
+    public List<Field> fieldLst() {
         return _field_lst;
-    }
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSetMetaData list) throws SQLException {
-        int count;
-        count = list.getColumnCount();
-
-        _field_lst = new Vector();
-
-        for (int i = 0; i < count; i++) {
-            String column = list.getColumnName(i + 1);
-
-            Field field = createField(column);
-            field.init(list, i);
-
-            pushFld(field);
-        }
-        return _field_lst;
-    }
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSet list) throws SQLException {
-        return fieldLst(list.getMetaData());
     }
 
     /**
@@ -389,20 +354,6 @@ public abstract class AbstractTable implements Table {
         rec.pushLst(value);
 
         return push(rec);
-    }
-
-    /**
-     * Adds a record from a result set
-     */
-    public Table push(java.sql.ResultSet rs) throws SQLException {
-        Record rec;
-        rec = createRecord();
-
-        rec.pushLst(rs);
-
-        push(rec);
-
-        return this;
     }
 
     /**
@@ -480,113 +431,6 @@ public abstract class AbstractTable implements Table {
         }
 
         return this;
-    }
-
-    /**
-     * Creates an html table document of this table
-     *
-     * This function is the equivalent of toHtmlTable( "" )
-     */
-    public String toHtmlTable() {
-        return toHtmlTable("");
-    }
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param param is the optional param string after the table tag
-     */
-    public String toHtmlTable(String param) {
-        StringBuffer retval = new StringBuffer();
-        List v;
-        Iterator e;
-
-        retval.append("<table " + param + ">\n");
-
-        retval.append("<tr>");
-        v = _field_lst;
-        for (e = v.iterator(); e.hasNext();) {
-            retval.append("<th>");
-            retval.append(((Field) (e.next())).name());
-            retval.append("</th>");
-        }
-        retval.append("</tr>\n");
-
-        Record rec;
-        for (first(); !eof(); next()) {
-            rec = get();
-
-            retval.append("<tr>");
-            v = rec.valLst();
-            for (e = v.iterator(); e.hasNext();) {
-                retval.append("<td>");
-
-                String buf;
-
-                buf = e.next().toString();
-                if (buf.trim().length() > 0) {
-                    retval.append(buf);
-                } else {
-                    retval.append("&nbsp;");
-                }
-                retval.append("</td>");
-            }
-            retval.append("</tr>\n");
-        }
-
-        retval.append("</table>\n");
-
-        return retval.toString();
-    }
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param tablep is the parameter for the table
-     * @param thp    is the parameter for the header
-     * @param tdp    is the parameter for the cell
-     */
-    public String toHtmlTable(String tablep, String thp, String tdp) {
-        StringBuffer retval = new StringBuffer();
-        List v;
-        Iterator e;
-
-        retval.append("<table " + tablep + ">\n");
-
-        retval.append("<tr>");
-        v = _field_lst;
-        for (e = v.iterator(); e.hasNext();) {
-            retval.append("<td " + thp + ">");
-            retval.append(((Field) (e.next())).name());
-            retval.append("</th>");
-        }
-        retval.append("</tr>\n");
-
-        Record rec;
-        for (first(); !eof(); next()) {
-            rec = get();
-
-            retval.append("<tr>");
-            v = rec.valLst();
-            for (e = v.iterator(); e.hasNext();) {
-                retval.append("<td " + tdp + ">");
-
-                String buf;
-
-                buf = e.next().toString();
-                if (buf.trim().length() > 0) {
-                    retval.append(buf);
-                } else {
-                    retval.append("&nbsp;");
-                }
-                retval.append("</td>");
-            }
-            retval.append("</tr>\n");
-        }
-
-        retval.append("</table>\n");
-
-        return retval.toString();
     }
 
     /**

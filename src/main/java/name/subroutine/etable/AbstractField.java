@@ -1,6 +1,5 @@
 package name.subroutine.etable;
 
-import java.util.*;
 import java.sql.*;
 import java.lang.reflect.*;
 
@@ -82,23 +81,6 @@ public abstract class AbstractField implements Field {
     }
 
     /**
-     * Sets type by Class
-     */
-    public void type(Class t) {
-        if (t.equals(int.class) || t.equals(double.class) || t.equals(float.class)) {
-            _type = 'N';
-            return;
-        }
-
-        if (t.equals(java.util.Date.class)) {
-            _type = 'D';
-            return;
-        }
-
-        _type = 'C';
-    }
-
-    /**
      * Returns type
      */
     public int type() {
@@ -122,9 +104,9 @@ public abstract class AbstractField implements Field {
 
     public Object clone() {
         try {
-            Class c = getClass();
+            Class<? extends AbstractField> c = getClass();
 
-            Constructor con;
+            Constructor<? extends AbstractField> con;
             con = c.getConstructor(new Class[] { String.class, int.class });
 
             Object nu = con.newInstance(new Object[] { _name.toString(), new Integer(_type) });

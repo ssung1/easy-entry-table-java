@@ -2,7 +2,6 @@ package name.subroutine.etable;
 
 import java.util.*;
 import java.io.*;
-import java.sql.*;
 
 public interface Table {
     /**
@@ -50,20 +49,6 @@ public interface Table {
     public Table push(String[] value);
 
     /**
-     * Appends from current record in a result set
-     *
-     * This only adds one more record.
-     */
-    public Table push(ResultSet value) throws SQLException;
-
-    /**
-     * Appends all the records from the current record set on
-     *
-     * This function may add more than one record
-     */
-    public Table pushLst(ResultSet rs) throws SQLException;
-
-    /**
      * Creates a record using given array of String objects.
      *
      * This function is provided for users who are not loading from an etable file
@@ -87,7 +72,7 @@ public interface Table {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List value);
+    public Record createRecord(List<String> value);
 
     /**
      * Put the cursor in the first record and returns it
@@ -196,7 +181,7 @@ public interface Table {
      *
      * @return field list
      */
-    public List fieldLst(String[] list);
+    public List<Field> fieldLst(String[] list);
 
     /**
      * This function sets the field list to the provided vector of String objects.
@@ -204,28 +189,12 @@ public interface Table {
      *
      * @return field list
      */
-    public List fieldLst(List list);
+    public List<Field> fieldLst(List<String> list);
 
     /**
      * Returns the field list
      */
-    public List fieldLst();
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSetMetaData list) throws SQLException;
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSet list) throws SQLException;
+    public List<Field> fieldLst();
 
     /**
      * Adds a line (must be a complete line, up until linefeed) to the table. The
@@ -271,27 +240,4 @@ public interface Table {
      * Deletes a column
      */
     public Table delete(int idx);
-
-    /**
-     * Creates an html table document of this table
-     *
-     * This function is the equivalent of toHtmlTable( "" )
-     */
-    public String toHtmlTable();
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param param is the optional param string after the table tag
-     */
-    public String toHtmlTable(String param);
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param tablep is the parameter for the table
-     * @param thp    is the parameter for the header
-     * @param tdp    is the parameter for the cell
-     */
-    public String toHtmlTable(String tablep, String thp, String tdp);
 }

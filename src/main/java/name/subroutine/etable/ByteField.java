@@ -1,7 +1,5 @@
 package name.subroutine.etable;
 
-import java.util.*;
-
 /**
  * This is a field whose smallest unit is the byte
  */

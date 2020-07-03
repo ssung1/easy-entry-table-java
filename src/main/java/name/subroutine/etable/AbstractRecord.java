@@ -15,20 +15,20 @@ public abstract class AbstractRecord implements Record {
      * change the field definitions after the records are loaded. Then all sorts of
      * wacky stuff can happen.
      */
-    public List _field_lst;
+    public List<Field> _field_lst;
 
     /**
      * This is a vector of StringBuffer objects unless stated otherwise.
      */
-    public Vector _value_lst;
+    public Vector<StringBuffer> _value_lst;
 
     public AbstractRecord() {
-        _value_lst = new Vector();
+        _value_lst = new Vector<>();
     }
 
-    public AbstractRecord(List field_lst) {
+    public AbstractRecord(List<Field> field_lst) {
         _field_lst = field_lst;
-        _value_lst = new Vector();
+        _value_lst = new Vector<>();
     }
 
     /**
@@ -52,7 +52,7 @@ public abstract class AbstractRecord implements Record {
         return get(idx);
     }
 
-    public List valLst() {
+    public List<StringBuffer> valLst() {
         return _value_lst;
     }
 
@@ -151,18 +151,6 @@ public abstract class AbstractRecord implements Record {
     }
 
     /**
-     * Adds a value at the end of the value list
-     *
-     * Sometimes our values and field definitions do not match. This is usually a
-     * bad thing, but during the construction of a record, we will have these
-     * intermediate states.
-     */
-    public Record push(Object val) {
-        _value_lst.addElement(val);
-        return this;
-    }
-
-    /**
      * Adds a set of values to the end of the value list
      */
     public Record pushLst(ResultSet value) throws SQLException {
@@ -226,8 +214,8 @@ public abstract class AbstractRecord implements Record {
     /**
      * Returns the value as a "map", or associative array
      */
-    public Map toMap() {
-        Map map = new HashMap();
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<>();
         int i;
         try {
             for (i = 0; i < fieldCnt(); i++) {

@@ -1,7 +1,6 @@
 package name.subroutine.etable;
 
 import java.util.*;
-import java.sql.*;
 
 /**
  * A record very much like the one in relational databases.
@@ -9,8 +8,8 @@ import java.sql.*;
  * Its fields are defined elsewhere and are shared with other records.
  */
 public class EtableRecord extends AbstractRecord {
-    public EtableRecord(List field_lst) {
+    public EtableRecord(List<Field> field_lst) {
         _field_lst = field_lst;
-        _value_lst = new Vector();
+        _value_lst = new Vector<>();
     }
 }

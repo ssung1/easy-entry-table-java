@@ -2,7 +2,6 @@ package name.subroutine.etable;
 
 import java.util.*;
 import java.io.*;
-import java.sql.*;
 
 /**
  * This is used to generate classes with different trimming properties. By using
@@ -51,7 +50,7 @@ interface Retriever {
     /**
      * Returns a StringBuffer. Any StringBuffer
      *
-     * Implemtors of this interface must return the appropriate StringBuffer to
+     * Implementors of this interface must return the appropriate StringBuffer to
      * match the needs of the slice method.
      */
     abstract public StringBuffer get(Etable table, int idx);
@@ -59,7 +58,7 @@ interface Retriever {
     /**
      * Returns a vector of objects
      */
-    abstract public List get(Etable table);
+    abstract public List<StringBuffer> get(Etable table);
 }
 
 /**
@@ -83,8 +82,8 @@ class FieldRetriever implements Retriever {
      * In C++ we would worry about all those empty vectors, but in this case, we can
      * take advantage of the garbage collection
      */
-    public List get(Etable table) {
-        return new Vector();
+    public List<StringBuffer> get(Etable table) {
+        return new Vector<>();
     }
 }
 
@@ -105,7 +104,7 @@ class NewRetriever implements Retriever {
     /**
      * Creates a new record and returns the _value_lst member
      */
-    public List get(Etable table) {
+    public List<StringBuffer> get(Etable table) {
         Record rec = new EtableRecord(table._field_lst);
         table.push(rec);
 
@@ -136,8 +135,8 @@ class RecordRetriever implements Retriever {
      *
      * Again, GC will take care of this dummy vector.
      */
-    public List get(Etable table) {
-        return new Vector();
+    public List<StringBuffer> get(Etable table) {
+        return new Vector<>();
     }
 }
 
@@ -240,12 +239,12 @@ public class Etable extends AbstractTable {
      * This vector contains a list of Field objects. Each field has an offset and a
      * width.
      */
-    public Vector _field_lst;
+    public Vector<Field> _field_lst;
 
     /**
      * A vector to hold all the record objects
      */
-    public Vector _record_lst;
+    public Vector<Record> _record_lst;
 
     public Etable() {
         init();
@@ -255,8 +254,8 @@ public class Etable extends AbstractTable {
      * initializes the etable
      */
     public void init() {
-        _record_lst = new Vector();
-        _field_lst = new Vector();
+        _record_lst = new Vector<>();
+        _field_lst = new Vector<>();
         _prev_status = 0;
         _status = 0;
     }
@@ -315,30 +314,6 @@ public class Etable extends AbstractTable {
     }
 
     /**
-     * Appends from current record in a result set
-     */
-    public Table push(ResultSet value) {
-        Record rec = new EtableRecord(_field_lst);
-        try {
-            rec.pushLst(value);
-        } catch (Exception ex) {
-        }
-
-        return push(rec);
-    }
-
-    /**
-     * Appends all the records from the current record set on
-     */
-    public Table pushLst(ResultSet rs) throws SQLException {
-        do {
-            push(rs);
-        } while (rs.next());
-
-        return this;
-    }
-
-    /**
      * Creates a record using given array of String objects.
      *
      * This function is provided for users who are not loading from an etable file
@@ -361,7 +336,7 @@ public class Etable extends AbstractTable {
      * This function is provided for users who are not loading from an etable file
      * but are using the Etable object as a storage area for record sets.
      */
-    public Record createRecord(List value) {
+    public Record createRecord(List<String> value) {
         String[] string_value = new String[0];
 
         string_value = (String[]) value.toArray(string_value);
@@ -550,8 +525,8 @@ public class Etable extends AbstractTable {
      *
      * @return field list
      */
-    public List fieldLst(String[] list) {
-        _field_lst = new Vector();
+    public List<Field> fieldLst(String[] list) {
+        _field_lst = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
@@ -567,7 +542,7 @@ public class Etable extends AbstractTable {
      *
      * @return field list
      */
-    public List fieldLst(List list) {
+    public List<Field> fieldLst(List<String> list) {
         String[] string_lst = new String[0];
         string_lst = (String[]) list.toArray(string_lst);
 
@@ -577,51 +552,8 @@ public class Etable extends AbstractTable {
     /**
      * Returns the field list
      */
-    public List fieldLst() {
+    public List<Field> fieldLst() {
         return _field_lst;
-    }
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSetMetaData list) throws SQLException {
-        int count;
-        count = list.getColumnCount();
-
-        String[] string_lst = new String[count];
-
-        for (int i = 0; i < count; i++) {
-            String column;
-            column = list.getColumnName(i + 1);
-
-            // 10/15/2000
-            //
-            // we use only the name after the period, because
-            // some databases keep the table name in the column
-            // name too
-
-            int period;
-            period = column.lastIndexOf('.');
-            if (period >= 0) {
-                column = column.substring(period + 1);
-            }
-
-            string_lst[i] = column;
-        }
-        return fieldLst(string_lst);
-    }
-
-    /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
-     *
-     * @return field list
-     */
-    public List fieldLst(ResultSet list) throws SQLException {
-        return fieldLst(list.getMetaData());
     }
 
     /**
@@ -639,7 +571,7 @@ public class Etable extends AbstractTable {
      *
      * @return a vector of Field objects
      */
-    public static Vector createFieldLst(String buf) {
+    public static Vector<Field> createFieldLst(String buf) {
         /*
          * we only need to states: space, and non-space
          *
@@ -650,7 +582,7 @@ public class Etable extends AbstractTable {
 
         int status;
 
-        Vector field_lst = new Vector();
+        Vector<Field> field_lst = new Vector<>();
 
         /*
          * initialize to space for now, so when we hit the first nonspace we mark it
@@ -785,7 +717,7 @@ public class Etable extends AbstractTable {
         return 0;
     }
 
-    public List slice(String buf, Retriever retriever, StringTrimmer trimmer) {
+    public List<StringBuffer> slice(String buf, Retriever retriever, StringTrimmer trimmer) {
         try {
             return _slice(buf, retriever, trimmer);
         } catch (Exception ex) {
@@ -799,8 +731,8 @@ public class Etable extends AbstractTable {
      *
      * @returns a Vector of StringBuffers
      */
-    public List _slice(String buf, Retriever retriever, StringTrimmer trimmer) {
-        List pieces = retriever.get(this);
+    public List<StringBuffer> _slice(String buf, Retriever retriever, StringTrimmer trimmer) {
+        List<StringBuffer> pieces = retriever.get(this);
         StringBuffer piece;
         String newpiece;
 
@@ -893,7 +825,6 @@ public class Etable extends AbstractTable {
         FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
 
-        int i;
         while (true) {
             String buf = br.readLine();
             if (buf == null)
@@ -971,113 +902,6 @@ public class Etable extends AbstractTable {
         }
 
         return this;
-    }
-
-    /**
-     * Creates an html table document of this table
-     *
-     * This function is the equivalent of toHtmlTable( "" )
-     */
-    public String toHtmlTable() {
-        return toHtmlTable("");
-    }
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param param is the optional param string after the table tag
-     */
-    public String toHtmlTable(String param) {
-        StringBuffer retval = new StringBuffer();
-        List v;
-        Iterator e;
-
-        retval.append("<table " + param + ">\n");
-
-        retval.append("<tr>");
-        v = _field_lst;
-        for (e = v.iterator(); e.hasNext();) {
-            retval.append("<th>");
-            retval.append(((Field) (e.next())).name());
-            retval.append("</th>");
-        }
-        retval.append("</tr>\n");
-
-        Record rec;
-        for (first(); !eof(); next()) {
-            rec = get();
-
-            retval.append("<tr>");
-            v = rec.valLst();
-            for (e = v.iterator(); e.hasNext();) {
-                retval.append("<td>");
-
-                String buf;
-
-                buf = e.next().toString();
-                if (buf.trim().length() > 0) {
-                    retval.append(buf);
-                } else {
-                    retval.append("&nbsp;");
-                }
-                retval.append("</td>");
-            }
-            retval.append("</tr>\n");
-        }
-
-        retval.append("</table>\n");
-
-        return retval.toString();
-    }
-
-    /**
-     * creates an html table document of this table
-     *
-     * @param tablep is the parameter for the table
-     * @param thp    is the parameter for the header
-     * @param tdp    is the parameter for the cell
-     */
-    public String toHtmlTable(String tablep, String thp, String tdp) {
-        StringBuffer retval = new StringBuffer();
-        List v;
-        Iterator e;
-
-        retval.append("<table " + tablep + ">\n");
-
-        retval.append("<tr>");
-        v = _field_lst;
-        for (e = v.iterator(); e.hasNext();) {
-            retval.append("<td " + thp + ">");
-            retval.append(((Field) (e.next())).name());
-            retval.append("</th>");
-        }
-        retval.append("</tr>\n");
-
-        Record rec;
-        for (first(); !eof(); next()) {
-            rec = get();
-
-            retval.append("<tr>");
-            v = rec.valLst();
-            for (e = v.iterator(); e.hasNext();) {
-                retval.append("<td " + tdp + ">");
-
-                String buf;
-
-                buf = e.next().toString();
-                if (buf.trim().length() > 0) {
-                    retval.append(buf);
-                } else {
-                    retval.append("&nbsp;");
-                }
-                retval.append("</td>");
-            }
-            retval.append("</tr>\n");
-        }
-
-        retval.append("</table>\n");
-
-        return retval.toString();
     }
 
     public Record createRecord() {
