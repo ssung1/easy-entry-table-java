@@ -483,7 +483,7 @@ public class Etable extends AbstractTable {
      * Adds a field to the field list by name
      */
     public int pushColumn(String name) {
-        Column field = createField(name);
+        Column field = createColumn(name);
         _field_lst.add(field);
         return 1;
     }
@@ -530,7 +530,7 @@ public class Etable extends AbstractTable {
 
         int i;
         for (i = 0; i < list.length; i++) {
-            Column field = createField(list[i].trim());
+            Column field = createColumn(list[i].trim());
             _field_lst.add(field);
         }
         return _field_lst;
@@ -904,11 +904,11 @@ public class Etable extends AbstractTable {
         return this;
     }
 
-    public Row createRecord() {
+    public Row createRow() {
         return new EtableRow(getColumnList());
     }
 
-    public Column createField(String name) {
+    public Column createColumn(String name) {
         return new EtableColumn(name);
     }
 }

@@ -59,12 +59,12 @@ public interface Table {
     /**
      * Creates a record associated with the table type.
      */
-    public Row createRecord();
+    public Row createRow();
 
     /**
      * Creates a field associated with the table type.
      */
-    public Column createField(String name);
+    public Column createColumn(String name);
 
     /**
      * Creates a record using given List of String objects.

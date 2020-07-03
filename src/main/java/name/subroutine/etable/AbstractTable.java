@@ -77,7 +77,7 @@ public abstract class AbstractTable implements Table {
      * Appends a record at the end of the record set
      */
     public Table push(Row rec) {
-        Row nu = createRecord();
+        Row nu = createRow();
         for (int i = 0; i < rec.getSize(); i++) {
             nu.push(rec.get(i).toString());
         }
@@ -94,7 +94,7 @@ public abstract class AbstractTable implements Table {
      * but are using the Etable object as a storage area for record sets.
      */
     public Row createRow(String[] value) {
-        Row rec = createRecord();
+        Row rec = createRow();
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -311,7 +311,7 @@ public abstract class AbstractTable implements Table {
 
         int i;
         for (i = 0; i < list.length; i++) {
-            Column field = createField(list[i].trim());
+            Column field = createColumn(list[i].trim());
             columnList.add(field);
         }
         return columnList;
@@ -349,7 +349,7 @@ public abstract class AbstractTable implements Table {
 
     public Table push(String[] value) {
         Row rec;
-        rec = createRecord();
+        rec = createRow();
 
         rec.pushAll(value);
 
@@ -365,7 +365,7 @@ public abstract class AbstractTable implements Table {
         cnt = getColumnCount();
 
         for (int i = 0; i < value.length; i += cnt) {
-            Row rec = createRecord();
+            Row rec = createRow();
 
             for (int j = 0; j < cnt; j++) {
                 rec.push(value[i + j]);
@@ -391,7 +391,7 @@ public abstract class AbstractTable implements Table {
             Row rec = null;
 
             if (row > 0) {
-                rec = createRecord();
+                rec = createRow();
                 push(rec);
             }
             for (col = 0; col < col_cnt; col++) {
