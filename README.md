@@ -73,3 +73,30 @@ flexible field.  Use it wisely.
 Header can be separated into multiple lines.  The same rules of
 trimming and concatenation apply.
 
+## Using Easy Entry Table Parser
+
+```java
+import name.subroutine.etable.Etable;
+
+// create the table
+Etable etable = new Etable();
+
+// add lines of table content
+etable.pushLine("%Header1  Header2");
+etable.pushLine(" content1 content2");
+
+// read metadata
+etable.getColumn(0).getName() // Header1
+
+// read content by index
+etable.get(0) // content1 content2
+etable.get(0).get(0).toString() // content1
+etable.get(0).get(1).toString() // content2
+
+// read content by header name
+etable.get(0).get("Header1").toString() // content1
+
+// another way to read content
+etable.get(0, 0).toString() // content1
+etable.get(0, "Header1").toString() // content1
+```
