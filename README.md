@@ -58,7 +58,7 @@ _cruiser
 |-|A horizontal line, also ignored.|
 |space|An actual space, not the word "space".  This is a regular record.  Each line will be separated into fields defined by the most recent header line.  Beginning and trailing spaces are trimmed.|
 |\*|A deleted record.  It is the same as a record but marked for deletion.|
-|\_|This means a continuation of a previous line.  The information will be parsed in the same way as the previous line, with the exception that trimming will only be done to the trailing spaces.  The contents will the nbe appended to the previous record, without inserting additional spaces in between.|
+|\_|An underscore means a continuation of a previous line.  The information will be parsed in the same way as the previous line, with the exception that trimming will only be done to the trailing spaces.  The contents will the nbe appended to the previous record, without inserting additional spaces in between.  Comments and horizontals lines cannot be continued.|
 
 Just imagine writing above table using Easy Entry Table format.  The source text would be so much easier to read.
 
