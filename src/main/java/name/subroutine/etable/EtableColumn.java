@@ -1,7 +1,7 @@
 package name.subroutine.etable;
 
 /**
- * Definition of a field.
+ * Definition of a column.
  */
 public class EtableColumn extends ByteColumn {
     public EtableColumn() {

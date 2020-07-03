@@ -5,16 +5,16 @@ import java.util.*;
 /**
  * A record very much like the one in relational databases.
  *
- * Its fields are defined elsewhere and are shared with other records.
+ * Its columns are defined elsewhere and are shared with other records.
  */
 public interface Row {
     /**
-     * Returns the contents of the field specified by fld_idx
+     * Returns the contents of the column specified by fld_idx
      */
-    public Object get(int fieldIndex);
+    public Object get(int columnIndex);
 
     /**
-     * Returns the contents of the field specified by field name
+     * Returns the contents of the column specified by column name
      */
     public Object get(String name);
 
@@ -31,25 +31,25 @@ public interface Row {
     /**
      * Sets a value in a record by index
      */
-    public Row set(String field, String value);
+    public Row set(String column, String value);
 
     /**
-     * Deletes a field and its value
+     * Deletes a column and its value
      */
     public Row delete(int idx);
 
     /**
-     * Deletes a field and its value
+     * Deletes a column and its value
      */
-    public Row delete(String field);
+    public Row delete(String column);
 
     /**
-     * Clears value contents but not field information
+     * Clears value contents but not column information
      */
     public Row clearValueList();
 
     /**
-     * Returns the number of fields in the record, according to its field data
+     * Returns the number of columns in the record, according to its column data
      */
     public int getColumnCount();
 
@@ -64,26 +64,26 @@ public interface Row {
     public int getSize();
 
     /**
-     * Gets a field by index number
+     * Gets a column by index number
      */
     public Column getColumn(int idx);
 
     /**
-     * Gets a field index by name or -1 if not found
+     * Gets a column index by name or -1 if not found
      */
     public int getColumn(String name);
 
     /**
      * Adds a value at the end of the value list
      *
-     * Sometimes our values and field definitions do not match. This is usually a
+     * Sometimes our values and column definitions do not match. This is usually a
      * bad thing, but during the construction of a record, we will have these
      * intermediate states.
      */
     public Row push(String val);
 
     /**
-     * Adds the fields of a Record into the current record
+     * Adds the columns of a Record into the current record
      */
     public Row push(Row value);
 

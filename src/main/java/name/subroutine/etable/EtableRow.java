@@ -5,11 +5,11 @@ import java.util.*;
 /**
  * A record very much like the one in relational databases.
  *
- * Its fields are defined elsewhere and are shared with other records.
+ * Its columns are defined elsewhere and are shared with other records.
  */
 public class EtableRow extends AbstractRow {
-    public EtableRow(List<Column> fieldList) {
-        this.fieldList = fieldList;
+    public EtableRow(List<Column> columnList) {
+        this.columnList = columnList;
         this.valueList = new Vector<>();
     }
 }

@@ -1,16 +1,16 @@
 package name.subroutine.etable;
 
 /**
- * Definition of a field.
+ * Definition of a column.
  */
 public interface Column extends Cloneable {
     /**
-     * returns the name of this field as a string
+     * returns the name of this column as a string
      */
     public String getName();
 
     /**
-     * Sets the name of the field
+     * Sets the name of the column 
      */
     public void setName(String n);
 

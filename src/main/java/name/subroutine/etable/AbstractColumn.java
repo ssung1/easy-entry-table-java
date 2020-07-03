@@ -3,7 +3,7 @@ package name.subroutine.etable;
 import java.lang.reflect.*;
 
 /**
- * Definition of a field.
+ * Definition of a column.
  */
 public abstract class AbstractColumn implements Column {
     public StringBuffer name;
@@ -25,7 +25,7 @@ public abstract class AbstractColumn implements Column {
     }
 
     /**
-     * returns the name of this field as a string
+     * returns the name of this column as a string
      */
     public String getName() {
         return name.toString();
@@ -51,14 +51,14 @@ public abstract class AbstractColumn implements Column {
 
     /**
      * Does nothing. Subclasses should decide if prec is supported for that class of
-     * field
+     * column 
      */
     public void prec(int p) {
     }
 
     /**
      * Does nothing. Subclasses should decide if prec is supported for that class of
-     * field
+     * column 
      */
     public int prec() {
         return 0;

@@ -6,16 +6,16 @@ import java.sql.*;
 /**
  * A record very much like the one in relational databases.
  *
- * Its fields are defined elsewhere and are shared with other records.
+ * Its columns are defined elsewhere and are shared with other records.
  */
 public abstract class AbstractRow implements Row {
     /**
      * This must be passed from the parent table. It is only included here so that
      * individual records can be handled separately. Also, a fun thing to do is to
-     * change the field definitions after the records are loaded. Then all sorts of
+     * change the column definitions after the records are loaded. Then all sorts of
      * wacky stuff can happen.
      */
-    public List<Column> fieldList;
+    public List<Column> columnList;
 
     /**
      * This is a vector of StringBuffer objects unless stated otherwise.
@@ -26,20 +26,20 @@ public abstract class AbstractRow implements Row {
         valueList = new Vector<>();
     }
 
-    public AbstractRow(List<Column> fieldList) {
-        this.fieldList = fieldList;
+    public AbstractRow(List<Column> columnList) {
+        this.columnList = columnList;
         valueList = new Vector<>();
     }
 
     /**
-     * Returns the contents of the field specified by fld_idx
+     * Returns the contents of the column specified by fld_idx
      */
-    public Object get(int fieldIndex) {
-        return valueList.elementAt(fieldIndex);
+    public Object get(int columnIndex) {
+        return valueList.elementAt(columnIndex);
     }
 
     /**
-     * Returns the contents of the field specified by field name
+     * Returns the contents of the column specified by column name
      */
     public Object get(String name) {
         int idx;
@@ -67,27 +67,27 @@ public abstract class AbstractRow implements Row {
     /**
      * Sets a value in a record by index
      */
-    public Row set(String field, String value) {
+    public Row set(String column, String value) {
         int idx;
-        idx = getColumn(field);
+        idx = getColumn(column);
         return set(idx, value);
     }
 
     /**
-     * Deletes a field and its value
+     * Deletes a column and its value
      */
     public Row delete(int idx) {
         valueList.remove(idx);
-        fieldList.remove(idx);
+        columnList.remove(idx);
         return this;
     }
 
     /**
-     * Deletes a field and its value
+     * Deletes a column and its value
      */
-    public Row delete(String field) {
+    public Row delete(String column) {
         int idx;
-        idx = getColumn(field);
+        idx = getColumn(column);
         return delete(idx);
     }
 
@@ -97,10 +97,10 @@ public abstract class AbstractRow implements Row {
     }
 
     /**
-     * Returns the number of fields in the record, according to its field data
+     * Returns the number of columns in the record, according to its column data
      */
     public int getColumnCount() {
-        return fieldList.size();
+        return columnList.size();
     }
 
     /**
@@ -118,20 +118,20 @@ public abstract class AbstractRow implements Row {
     }
 
     /**
-     * Gets a field by index number
+     * Gets a column by index number
      */
     public Column getColumn(int idx) {
-        Column field = (Column) fieldList.get(idx);
-        return field;
+        Column column = (Column) columnList.get(idx);
+        return column;
     }
 
     /**
-     * Gets a field index by name or -1 if not found
+     * Gets a column index by name or -1 if not found
      */
     public int getColumn(String name) {
-        for (int i = 0; i < fieldList.size(); i++) {
-            Column field = getColumn(i);
-            if (name.equalsIgnoreCase(field.getName())) {
+        for (int i = 0; i < columnList.size(); i++) {
+            Column column = getColumn(i);
+            if (name.equalsIgnoreCase(column.getName())) {
                 return i;
             }
         }
@@ -141,7 +141,7 @@ public abstract class AbstractRow implements Row {
     /**
      * Adds a value at the end of the value list
      *
-     * Sometimes our values and field definitions do not match. This is usually a
+     * Sometimes our values and column definitions do not match. This is usually a
      * bad thing, but during the construction of a record, we will have these
      * intermediate states.
      */
@@ -170,7 +170,7 @@ public abstract class AbstractRow implements Row {
     }
 
     /**
-     * Adds the fields of a Record into the current record
+     * Adds the columns of a Record into the current record
      */
     public Row push(Row value) {
         for (int i = 0; i < value.getSize(); i++) {

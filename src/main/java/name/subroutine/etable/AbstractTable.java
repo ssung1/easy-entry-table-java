@@ -19,7 +19,7 @@ public abstract class AbstractTable implements Table {
     public int type;
 
     /**
-     * This vector contains a list of Field objects. Each field has an offset and a
+     * This vector contains a list of Column objects. Each column has an offset and a
      * width.
      */
     public Vector<Column> columnList;
@@ -53,7 +53,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets number of fields
+     * Gets number of columns
      */
     public int getColumnCount() {
         return columnList.size();
@@ -155,7 +155,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets from the current record the field specified by fld_idx
+     * Gets from the current record the column specified by fld_idx
      */
     public Object getValue(int columnIndex) {
         Row rec = get();
@@ -166,7 +166,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets from the current record the field specified by field name
+     * Gets from the current record the column specified by column name
      */
     public Object getValue(String name) {
         Row rec = get();
@@ -177,7 +177,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets from the specified record the field specified by fld_idx
+     * Gets from the specified record the column specified by fld_idx
      */
     public Object getValue(int rowIndex, int columnIndex) {
         Row rec = get(rowIndex);
@@ -188,7 +188,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets from the current record the field specified by field name
+     * Gets from the current record the column specified by column name
      */
     public Object getValue(int rowIndex, String columnName) {
         Row rec = get(rowIndex);
@@ -258,19 +258,19 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Adds a field to the field list
+     * Adds a column to the column list
      *
-     * The function will create a clone of the given field and adds it to the end of
-     * the field list
+     * The function will create a clone of the given column and adds it to the end of
+     * the column list
      */
-    public int pushColumn(Column field) {
-        Column newfield = (Column) field.clone();
-        columnList.add(newfield);
+    public int pushColumn(Column column) {
+        Column newColumn = (Column) column.clone();
+        columnList.add(newColumn);
         return 1;
     }
 
     /**
-     * Adds an array of strings into the field list
+     * Adds an array of strings into the column list
      */
     public int pushColumn(String[] nameList) {
         for (int i = 0; i < nameList.length; i++) {
@@ -280,20 +280,20 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Gets a field by index number
+     * Gets a column by index number
      */
     public Column getColumn(int idx) {
-        Column field = (Column) columnList.get(idx);
-        return field;
+        Column column = (Column) columnList.get(idx);
+        return column;
     }
 
     /**
-     * Gets a field index by name or -1 if not found
+     * Gets a column index by name or -1 if not found
      */
     public int getColumn(String name) {
         for (int i = 0; i < columnList.size(); i++) {
-            Column field = getColumn(i);
-            if (name.equalsIgnoreCase(field.getName())) {
+            Column column = getColumn(i);
+            if (name.equalsIgnoreCase(column.getName())) {
                 return i;
             }
         }
@@ -301,27 +301,27 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * This function sets the field list to the provided array of String objects.
-     * The field widths and offsets are left at zero
+     * This function sets the column list to the provided array of String objects.
+     * The column widths and offsets are left at zero
      *
-     * @return field list
+     * @return column list
      */
     public List<Column> setColumnList(String[] list) {
         columnList = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
-            Column field = createColumn(list[i].trim());
-            columnList.add(field);
+            Column column = createColumn(list[i].trim());
+            columnList.add(column);
         }
         return columnList;
     }
 
     /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
+     * This function sets the column list to the provided vector of String objects.
+     * The column widths and offsets are left at zero
      *
-     * @return field list
+     * @return column list
      */
     public List<Column> setColumnList(List<String> list) {
         String[] string_lst = new String[0];
@@ -331,7 +331,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Returns the field list
+     * Returns the column list
      */
     public List<Column> getColumnList() {
         return columnList;
@@ -357,8 +357,8 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Appends an etable with an array Fields must be set first!!! (don't include
-     * the fields in the array because it needs field information to append)
+     * Appends an etable with an array Columns must be set first!!! (don't include
+     * the columns in the array because it needs column information to append)
      */
     public Table pushList(String[] value) {
         int cnt;
@@ -378,7 +378,7 @@ public abstract class AbstractTable implements Table {
 
     /**
      * Sets the current etable to the contents of data, whose first row contains the
-     * field names
+     * column names
      */
     public void set(String[] data, int col_cnt) {
         int row;
@@ -437,8 +437,8 @@ public abstract class AbstractTable implements Table {
      * turns a record into an array of 2 x N:
      * 
      * <pre>
-     * Field0        Value0
-     * Field1        Value1
+     * Column0        Value0
+     * Column1        Value1
      * ...
      * and so on
      * </pre>

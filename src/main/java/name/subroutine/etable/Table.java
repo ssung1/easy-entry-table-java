@@ -20,7 +20,7 @@ public interface Table {
     public void clearRowList();
 
     /**
-     * Gets number of fields
+     * Gets number of columns
      */
     public int getColumnCount();
 
@@ -41,7 +41,7 @@ public interface Table {
 
     /**
      * Appends an array of String objects at the end of record set. The values need
-     * not match the field definitions. This function is provided to those who wish
+     * not match the column definitions. This function is provided to those who wish
      * to create a record set
      *
      * This only adds one more record.
@@ -62,7 +62,7 @@ public interface Table {
     public Row createRow();
 
     /**
-     * Creates a field associated with the table type.
+     * Creates a column associated with the table type.
      */
     public Column createColumn(String name);
 
@@ -96,22 +96,22 @@ public interface Table {
     public Row get(int num);
 
     /**
-     * Gets from the current record the field specified by fld_idx
+     * Gets from the current record the column specified by fld_idx
      */
-    public Object getValue(int fieldIndex);
+    public Object getValue(int columnIndex);
 
     /**
-     * Gets from the current record the field specified by field name
+     * Gets from the current record the column specified by column name
      */
     public Object getValue(String name);
 
     /**
-     * Gets from the specified record the field specified by fld_idx
+     * Gets from the specified record the column specified by fld_idx
      */
-    public Object getValue(int recordIndex, int fieldIndex);
+    public Object getValue(int recordIndex, int columnIndex);
 
     /**
-     * Gets from the current record the field specified by field name
+     * Gets from the current record the column specified by column name
      */
     public Object getValue(int recordIndex, String name);
 
@@ -123,7 +123,7 @@ public interface Table {
     /**
      * sets a value of the current record
      */
-    public void setValue(String field, String val);
+    public void setValue(String column, String val);
 
     /**
      * Advances the cursor to the next record
@@ -148,51 +148,51 @@ public interface Table {
     public Row last();
 
     /**
-     * Adds a field to the field list
+     * Adds a column to the column list
      *
-     * The function will create a clone of the given field and adds it to the end of
-     * the field list
+     * The function will create a clone of the given column and adds it to the end of
+     * the column list
      */
-    public int pushColumn(Column field);
+    public int pushColumn(Column column);
 
     /**
-     * Adds a field to the field list by name
+     * Adds a column to the column list by name
      */
     public int pushColumn(String name);
 
     /**
-     * Adds an array of strings into the field list
+     * Adds an array of strings into the column list
      */
     public int pushColumn(String[] nameList);
 
     /**
-     * Gets a field by index number
+     * Gets a column by index number
      */
     public Column getColumn(int idx);
 
     /**
-     * Gets a field index by name or -1 if not found
+     * Gets a column index by name or -1 if not found
      */
     public int getColumn(String name);
 
     /**
-     * This function sets the field list to the provided array of String objects.
-     * The field widths and offsets are left at zero
+     * This function sets the column list to the provided array of String objects.
+     * The column widths and offsets are left at zero
      *
-     * @return field list
+     * @return column list
      */
     public List<Column> setColumnList(String[] list);
 
     /**
-     * This function sets the field list to the provided vector of String objects.
-     * The field widths and offsets are left at zero
+     * This function sets the column list to the provided vector of String objects.
+     * The column widths and offsets are left at zero
      *
-     * @return field list
+     * @return column list
      */
     public List<Column> setColumnList(List<String> list);
 
     /**
-     * Returns the field list
+     * Returns the column list
      */
     public List<Column> getColumnList();
 
@@ -218,8 +218,8 @@ public interface Table {
     public void pushLineList(String[] lineList);
 
     /**
-     * Appends an etable with an array Fields must be set first!!! (don't include
-     * the fields in the array because it needs field information to append)
+     * Appends an etable with an array Columns must be set first!!! (don't include
+     * the columns in the array because it needs column information to append)
      *
      * This function may add more than one record
      */
@@ -227,7 +227,7 @@ public interface Table {
 
     /**
      * Sets the current etable to the contents of data, whose first row contains the
-     * field names
+     * column names
      */
     public void set(String[] data, int columnCount);
 
