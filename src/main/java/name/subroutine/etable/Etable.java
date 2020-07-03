@@ -72,7 +72,7 @@ class FieldRetriever implements Retriever {
      */
     public StringBuffer get(Etable table, int idx) {
         EtableColumn field;
-        field = (EtableColumn) table._field_lst.elementAt(idx);
+        field = (EtableColumn) table.columnList.elementAt(idx);
         return field.name;
     }
 
@@ -105,7 +105,7 @@ class NewRetriever implements Retriever {
      * Creates a new record and returns the _value_lst member
      */
     public List<StringBuffer> get(Etable table) {
-        Row rec = new EtableRow(table._field_lst);
+        Row rec = new EtableRow(table.columnList);
         table.push(rec);
 
         return rec.getValueList();
@@ -236,12 +236,6 @@ public class Etable extends AbstractTable {
     public int _type;
 
     /**
-     * This vector contains a list of Field objects. Each field has an offset and a
-     * width.
-     */
-    public Vector<Column> _field_lst;
-
-    /**
      * A vector to hold all the record objects
      */
     public Vector<Row> _record_lst;
@@ -254,8 +248,8 @@ public class Etable extends AbstractTable {
      * initializes the etable
      */
     public void init() {
+        super.init();
         _record_lst = new Vector<>();
-        _field_lst = new Vector<>();
         _prev_status = 0;
         _status = 0;
     }
@@ -265,7 +259,6 @@ public class Etable extends AbstractTable {
      */
     public void clear() {
         _record_lst.clear();
-        _field_lst.clear();
     }
 
     /**
@@ -279,7 +272,7 @@ public class Etable extends AbstractTable {
      * Gets number of fields
      */
     public int getColumnCount() {
-        return _field_lst.size();
+        return columnList.size();
     }
 
     /**
@@ -303,7 +296,7 @@ public class Etable extends AbstractTable {
      * to create a record set
      */
     public Table push(String[] value) {
-        Row rec = new EtableRow(_field_lst);
+        Row rec = new EtableRow(columnList);
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -320,7 +313,7 @@ public class Etable extends AbstractTable {
      * but are using the Etable object as a storage area for record sets.
      */
     public Row createRow(String[] value) {
-        Row rec = new EtableRow(_field_lst);
+        Row rec = new EtableRow(columnList);
 
         int i;
         for (i = 0; i < value.length; i++) {
@@ -484,7 +477,7 @@ public class Etable extends AbstractTable {
      */
     public int pushColumn(String name) {
         Column field = createColumn(name);
-        _field_lst.add(field);
+        columnList.add(field);
         return 1;
     }
 
@@ -502,7 +495,7 @@ public class Etable extends AbstractTable {
      * Gets a field by index number
      */
     public Column getColumn(int idx) {
-        Column field = (Column) _field_lst.get(idx);
+        Column field = (Column) columnList.get(idx);
         return field;
     }
 
@@ -510,7 +503,7 @@ public class Etable extends AbstractTable {
      * Gets a field index by name or -1 if not found
      */
     public int getColumn(String name) {
-        for (int i = 0; i < _field_lst.size(); i++) {
+        for (int i = 0; i < columnList.size(); i++) {
             Column field = getColumn(i);
             if (name.equalsIgnoreCase(field.getName())) {
                 return i;
@@ -521,19 +514,19 @@ public class Etable extends AbstractTable {
 
     /**
      * This function sets the field list to the provided array of String objects.
-     * The field widths and offsets are left at zero
+     * The field widths and offsets are set to zero
      *
      * @return field list
      */
     public List<Column> setColumnList(String[] list) {
-        _field_lst = new Vector<>();
+        columnList = new Vector<>();
 
         int i;
         for (i = 0; i < list.length; i++) {
             Column field = createColumn(list[i].trim());
-            _field_lst.add(field);
+            columnList.add(field);
         }
-        return _field_lst;
+        return columnList;
     }
 
     /**
@@ -553,7 +546,7 @@ public class Etable extends AbstractTable {
      * Returns the field list
      */
     public List<Column> getColumnList() {
-        return _field_lst;
+        return columnList;
     }
 
     /**
@@ -561,8 +554,8 @@ public class Etable extends AbstractTable {
      * field.
      */
     public int _createFieldLst(String buf) {
-        _field_lst = createFieldLst(buf);
-        return _field_lst.size();
+        columnList = createFieldLst(buf);
+        return columnList.size();
     }
 
     /**
@@ -736,7 +729,7 @@ public class Etable extends AbstractTable {
         StringBuffer piece;
         String newpiece;
 
-        if (_field_lst.size() < 1)
+        if (columnList.size() < 1)
             return pieces;
 
         /*
@@ -750,7 +743,7 @@ public class Etable extends AbstractTable {
         EtableColumn field;
         int len = buf.length();
         int idx;
-        for (idx = 1; idx < _field_lst.size(); idx++) {
+        for (idx = 1; idx < columnList.size(); idx++) {
             int prev_idx = idx - 1;
             /*
              * possible situations when slicing prev_idx:
@@ -758,7 +751,7 @@ public class Etable extends AbstractTable {
              * 1. buf isn't long enough to have anything sliced 2. buf contains a partial
              * slice 3. buf contains a full slice
              */
-            field = (EtableColumn) _field_lst.elementAt(prev_idx);
+            field = (EtableColumn) columnList.elementAt(prev_idx);
 
             piece = retriever.get(this, prev_idx);
             pieces.add(piece);
@@ -791,7 +784,7 @@ public class Etable extends AbstractTable {
          * idx - 1
          */
         piece = retriever.get(this, idx - 1);
-        field = (EtableColumn) _field_lst.elementAt(idx - 1);
+        field = (EtableColumn) columnList.elementAt(idx - 1);
 
         pieces.add(piece);
         if (field._offset >= len)
@@ -895,7 +888,7 @@ public class Etable extends AbstractTable {
      * Deletes a column
      */
     public Table delete(int idx) {
-        _field_lst.remove(idx);
+        columnList.remove(idx);
 
         for (first(); !eof(); next()) {
             get().getValueList().remove(idx);
