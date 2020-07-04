@@ -1,3 +1,5 @@
+![Java CI with Gradle](https://github.com/ssung1/easy-entry-table-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
+
 # Easy Entry Table
 
 Easy Entry Table is an easy way to create table from text, much like the
